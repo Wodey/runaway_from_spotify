@@ -1,16 +1,18 @@
-# This is a sample Python script.
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from os import getenv
+from dotenv import load_dotenv
+from tqdm import tqdm
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+scope = ['user-read-private', 'user-library-read']
 
+load_dotenv()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
+for i in tqdm(range(5565//20)):
+    tracks = sp.current_user_saved_tracks(limit=20, offset=(i * 20))['items']
+    with open('mymusic.txt', 'a', encoding='utf-8') as file:
+        for song in tqdm(tracks):
+            file.write(f"{song['track']['name']} - {song['track']['artists'][0]['name']} in album: {song['track']['album']['name']} \n")
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
